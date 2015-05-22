@@ -10,6 +10,7 @@ drupal:
   volumes:
     - /var/www/html/sites
     - /var/www/private
+    - ../monitoring-tools/plugins/check-drupal-cache:/opt/drupal_cache
   environment:
     - UPLOAD_LIMIT=20M
     - MEMORY_LIMIT=128M
