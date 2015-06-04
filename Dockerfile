@@ -1,7 +1,7 @@
 FROM samos123/drupal
 MAINTAINER Frédéric Vachon <frederic.vachon@savoirfairelinux.com>
 
-RUN apt-get update && apt-get install -y vim sudo
+RUN apt-get update && apt-get install -y vim sudo openssh-server
 
 RUN apt-get update && \
 	apt-get install -y subversion python-setuptools && \
@@ -26,6 +26,17 @@ RUN apt-get update && \
 
 RUN adduser nagios && adduser nagios www-data
 RUN sudo -u nagios drush pm-download site_audit
+
+COPY ssh/id_rsa.pub /root/.ssh/authorized_keys
+COPY ssh/id_rsa.pub /home/nagios/.ssh/authorized_keys
+
+RUN chmod 700 /root/.ssh
+RUN chown nagios:nagios /home/nagios/.ssh
+RUN chmod 700 /home/nagios/.ssh
+
+RUN chmod 600 /root/.ssh/authorized_keys
+RUN chown nagios:nagios /home/nagios/.ssh/authorized_keys
+RUN chmod 600 /home/nagios/.ssh/authorized_keys
 
 # Install and configure NRPE
 RUN apt-get update && apt-get install -y nagios-nrpe-server supervisor
