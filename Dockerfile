@@ -14,6 +14,15 @@ RUN apt-get update && \
 	svn checkout https://github.com/savoirfairelinux/monitoring-tools/branches/drupal/plugins/check-drupal-security /opt/drupal_security && \
 	svn checkout https://github.com/savoirfairelinux/monitoring-tools/branches/drupal/plugins/check-drupal-status /opt/drupal_status && \
 	svn checkout https://github.com/savoirfairelinux/monitoring-tools/branches/drupal/plugins/check-drupal-views /opt/drupal_views && \
+	chmod +x /opt/drupal_cache/shinkenplugins/plugins/drupal_cache/drupal_cache.py && \
+	chmod +x /opt/drupal_codebase/shinkenplugins/plugins/drupal_codebase/drupal_codebase.py && \
+	chmod +x /opt/drupal_cron/shinkenplugins/plugins/drupal_cron/drupal_cron.py && \
+	chmod +x /opt/drupal_database/shinkenplugins/plugins/drupal_database/drupal_database.py && \
+	chmod +x /opt/drupal_extensions/shinkenplugins/plugins/drupal_extensions/drupal_extensions.py && \
+	chmod +x /opt/drupal_logging/shinkenplugins/plugins/drupal_logging/drupal_logging.py && \
+	chmod +x /opt/drupal_security/shinkenplugins/plugins/drupal_security/drupal_security.py && \
+	chmod +x /opt/drupal_status/shinkenplugins/plugins/drupal_status/drupal_status.py && \
+	chmod +x /opt/drupal_views/shinkenplugins/plugins/drupal_views/drupal_views.py && \
 	apt-get remove -y subversion && \
 	cd /opt/drupal_cache && \
 	python setup.py develop
