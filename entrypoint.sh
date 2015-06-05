@@ -101,6 +101,7 @@ done
 
 exec service ssh restart&
 exec service nagios-nrpe-server restart&
+exec /init.sh&
 exec apache2-foreground
 exit 1
 
