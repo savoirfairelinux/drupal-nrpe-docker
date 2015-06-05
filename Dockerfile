@@ -50,5 +50,7 @@ RUN chmod 600 /home/nagios/.ssh/authorized_keys
 # Install and configure NRPE
 RUN apt-get update && apt-get install -y nagios-nrpe-server supervisor
 
+COPY ./init.sh /init.sh
+
 COPY entrypoint.sh /
 COPY etc/nagios/nrpe.cfg /etc/nagios/nrpe.cfg
