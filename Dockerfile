@@ -1,8 +1,7 @@
 FROM samos123/drupal
 MAINTAINER Frédéric Vachon <frederic.vachon@savoirfairelinux.com>
 
-RUN apt-get update && apt-get install -y vim sudo openssh-server python-pip python-dev
-RUN pip install python-surveilclient==0.5.1
+RUN apt-get update && apt-get install -y vim sudo openssh-server
 
 RUN apt-get update && \
 	apt-get install -y subversion python-setuptools && \
@@ -50,8 +49,6 @@ RUN chmod 600 /home/nagios/.ssh/authorized_keys
 
 # Install and configure NRPE
 RUN apt-get update && apt-get install -y nagios-nrpe-server supervisor
-
-COPY ./init.sh /init.sh
 
 COPY entrypoint.sh /
 COPY etc/nagios/nrpe.cfg /etc/nagios/nrpe.cfg
