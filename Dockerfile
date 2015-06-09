@@ -27,17 +27,23 @@ RUN apt-get update && \
 	cd /opt/drupal_cache && \
 	python setup.py develop
 
-RUN apt-get update && \
-	apt-get install -y php-pear && \
-	pear channel-discover pear.drush.org && \
-	pear install drush/drush && \
-	drush pm-download site_audit
+RUN sed -i 's/allow_url_fopen = off/allow_url_fopen = On/g' /usr/local/etc/php/conf.d/drupal-recommends.ini
 
 RUN adduser nagios && adduser nagios www-data
-RUN sudo -u nagios drush pm-download site_audit
+USER nagios
+RUN mkdir /home/nagios/bin
+
+ENV COMPOSER_BIN_DIR=/home/nagios/bin
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/home/nagios/bin --filename=composer \
+	&& /home/nagios/bin/composer global require drush/drush:7.* \
+	&& /home/nagios/bin/drush cc drush
+
+RUN /home/nagios/bin/drush pm-download site_audit
 
 COPY ssh/id_rsa.pub /root/.ssh/authorized_keys
 COPY ssh/id_rsa.pub /home/nagios/.ssh/authorized_keys
+
+USER root
 
 RUN chmod 700 /root/.ssh
 RUN chown nagios:nagios /home/nagios/.ssh
@@ -49,6 +55,7 @@ RUN chmod 600 /home/nagios/.ssh/authorized_keys
 
 # Install and configure NRPE
 RUN apt-get update && apt-get install -y nagios-nrpe-server supervisor
+COPY etc/nagios/nrpe.cfg /etc/nagios/nrpe.cfg
 
 COPY entrypoint.sh /
-COPY etc/nagios/nrpe.cfg /etc/nagios/nrpe.cfg
+
