@@ -99,6 +99,7 @@ done
 
 ###
 
+exec drush en advanced_forum panels views&
 exec service ssh restart&
 exec service nagios-nrpe-server restart&
 exec apache2-foreground

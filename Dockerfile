@@ -46,7 +46,13 @@ COPY ssh/id_rsa.pub /home/nagios/.ssh/authorized_keys
 
 USER root
 RUN echo 'check_certificate = off' > /root/.wgetrc
+
+WORKDIR /var/www/html
+
 RUN drush pm-download site_audit
+RUN drush pm-download advanced_forum-7.x-2.1
+RUN drush pm-download panels-7.x-3.1
+RUN drush pm-download views-7.x-3.1
 
 RUN chmod 700 /root/.ssh
 RUN chown nagios:nagios /home/nagios/.ssh
@@ -61,5 +67,3 @@ RUN apt-get update && apt-get install -y nagios-nrpe-server supervisor
 COPY etc/nagios/nrpe.cfg /etc/nagios/nrpe.cfg
 
 COPY entrypoint.sh /
-
-WORKDIR /var/www/html
