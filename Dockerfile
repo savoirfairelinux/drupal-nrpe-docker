@@ -1,7 +1,7 @@
 FROM samos123/drupal
 MAINTAINER Frédéric Vachon <frederic.vachon@savoirfairelinux.com>
 
-RUN apt-get update && apt-get install -y vim sudo openssh-server
+RUN apt-get update && apt-get install -y vim sudo openssh-server wget
 
 RUN apt-get update && \
 	apt-get install -y subversion python-setuptools && \
@@ -31,19 +31,22 @@ RUN sed -i 's/allow_url_fopen = off/allow_url_fopen = On/g' /usr/local/etc/php/c
 
 RUN adduser nagios && adduser nagios www-data
 USER nagios
-RUN mkdir /home/nagios/bin
 
 ENV COMPOSER_BIN_DIR=/home/nagios/bin
+RUN mkdir /home/nagios/bin
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/home/nagios/bin --filename=composer \
 	&& /home/nagios/bin/composer global require drush/drush:7.* \
 	&& /home/nagios/bin/drush cc drush
 
+RUN echo 'check_certificate = off' > /home/nagios/.wgetrc
 RUN /home/nagios/bin/drush pm-download site_audit
 
 COPY ssh/id_rsa.pub /root/.ssh/authorized_keys
 COPY ssh/id_rsa.pub /home/nagios/.ssh/authorized_keys
 
 USER root
+RUN echo 'check_certificate = off' > /root/.wgetrc
+RUN drush pm-download site_audit
 
 RUN chmod 700 /root/.ssh
 RUN chown nagios:nagios /home/nagios/.ssh
@@ -59,3 +62,4 @@ COPY etc/nagios/nrpe.cfg /etc/nagios/nrpe.cfg
 
 COPY entrypoint.sh /
 
+WORKDIR /var/www/html
