@@ -32,6 +32,8 @@ RUN sed -i 's/allow_url_fopen = off/allow_url_fopen = On/g' /usr/local/etc/php/c
 RUN adduser nagios && adduser nagios www-data
 USER nagios
 
+COPY home/nagios/.bashrc /home/nagios/.bashrc
+
 ENV COMPOSER_BIN_DIR=/home/nagios/bin
 RUN mkdir /home/nagios/bin
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/home/nagios/bin --filename=composer \
