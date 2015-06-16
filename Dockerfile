@@ -43,9 +43,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/home/nagi
 RUN echo 'check_certificate = off' > /home/nagios/.wgetrc
 RUN /home/nagios/bin/drush pm-download site_audit
 
-COPY ssh/id_rsa.pub /root/.ssh/authorized_keys
-COPY ssh/id_rsa.pub /home/nagios/.ssh/authorized_keys
-
 USER root
 RUN echo 'check_certificate = off' > /root/.wgetrc
 
@@ -55,14 +52,6 @@ RUN drush pm-download site_audit
 RUN drush pm-download advanced_forum-7.x-2.1
 RUN drush pm-download panels-7.x-3.1
 RUN drush pm-download views-7.x-3.1
-
-RUN chmod 700 /root/.ssh
-RUN chown nagios:nagios /home/nagios/.ssh
-RUN chmod 700 /home/nagios/.ssh
-
-RUN chmod 600 /root/.ssh/authorized_keys
-RUN chown nagios:nagios /home/nagios/.ssh/authorized_keys
-RUN chmod 600 /home/nagios/.ssh/authorized_keys
 
 # Install and configure NRPE
 RUN apt-get update && apt-get install -y nagios-nrpe-server supervisor
